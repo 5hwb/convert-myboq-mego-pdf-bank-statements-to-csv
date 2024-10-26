@@ -65,12 +65,6 @@ def generate_csv(transactions_list):
 
     save_str_to_file("MyBOQ.csv", output_data)
 
-#print(output_data)
-# 
-
 if __name__ == "__main__":
     transactions_list = convert_input_into_transactions_list()
     generate_csv(transactions_list)
-
-
-# re.search(REGEX_TRANSACTION, ' 09-May       09-May          To: ME credit card    -10.00                        5.00').groups()
