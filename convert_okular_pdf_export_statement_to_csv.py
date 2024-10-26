@@ -94,9 +94,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
             prog='ConvertBankStatementPDFTextExportToCSV',
             description='This script aims to extract the desired transaction data from the Okular exported text file and convert it into a CSV format.')
-    parser.add_argument('-i', '--input-filename', required=True)
-    parser.add_argument('-o', '--output-filename', required=True)
-    parser.add_argument('-y', '--current-year', required=True)
+    parser.add_argument('-i', '--input-filename', required=True, help='Filename of the text file to convert to CSV')
+    parser.add_argument('-o', '--output-filename', required=True, help='Filename of the CSV file to export to')
+    parser.add_argument('-y', '--current-year', required=True, help='The current year to add to the transaction date')
 
     args = parser.parse_args()
     print(args.input_filename, args.output_filename)
