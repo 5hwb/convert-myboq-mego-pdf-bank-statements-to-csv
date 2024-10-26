@@ -4,4 +4,8 @@ Some banks are only able to export bank transactions in PDF form via the stateme
 
 Recently, I found that the Okular PDF reader in Linux can export the contents to a text file which is reasonably structured. But as the transaction description may be spread out over multiple lines, using regex will not be possible.
 
-This script aims to extract the desired transaction data from the Okular exported text file and convert it into a CSV format.
+This script aims to extract the desired transaction data from the Okular exported text file and convert it into a CSV format which can then be copied to a spreadsheet.
+
+## Usage example
+
+`python3 convert_okular_pdf_export_statement_to_csv.py -i "bank-statement.txt" -o "bank-transactions.csv" -y 2024`

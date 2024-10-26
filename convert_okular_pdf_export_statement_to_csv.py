@@ -1,4 +1,5 @@
 import argparse
+from datetime import datetime
 import re
 from file_io import load_file_to_str, save_str_to_file
 
@@ -14,10 +15,15 @@ REGEX_TRANSACTION_WITH_BALANCE = REGEX_TRANSACTION + r'\s+' + REGEX_AMOUNT
 REGEX_CLOSING_BALANCE = r'(Closing Balance)\s+' + REGEX_AMOUNT
 REGEX_END_OF_PAGE = r'(Page|Statement continues over|Bank of Queensland|Please check your|Remember to retain|mebank|Account security tips|•)'
 
+def change_to_ymd_date_format(date, year):
+    if date == '':
+        return date
+    return datetime.strptime(date + ' ' + year, '%d %b %Y').strftime('%Y-%m-%d')
+
 class Transaction:
-    def __init__(self, date_received, date_processed, description, changes, balance):
-        self.date_received = date_received.replace('-', ' ')   # TODO: format this into a full date
-        self.date_processed = date_processed.replace('-', ' ') # TODO: format this into a full date
+    def __init__(self, date_received, date_processed, description, changes, balance, year):
+        self.date_received = change_to_ymd_date_format(date_received.replace('-', ' '), year)
+        self.date_processed = change_to_ymd_date_format(date_processed.replace('-', ' '), year)
         self.description = description.strip().replace(',', ' ')
         self.changes = changes.replace(',', '')
         self.balance = balance.replace(',', '')
@@ -25,7 +31,7 @@ class Transaction:
     def __str__(self) -> str:
         return '{} {} - \"{}\": {} ({})'.format(self.date_received, self.date_processed, self.description, self.changes, self.balance)
 
-def convert_input_into_transactions_list(file_to_load):
+def convert_input_into_transactions_list(file_to_load, current_year):
     input_data = load_file_to_str(file_to_load).split('\n')
     curr_transaction = None
     transactions_list = []
@@ -42,7 +48,7 @@ def convert_input_into_transactions_list(file_to_load):
             if is_reading_transaction:
                 transactions_list.append(curr_transaction)
             parsed_input = re.search(REGEX_CLOSING_BALANCE, input_line).groups()
-            curr_transaction = Transaction('', '', parsed_input[0], '0.00', parsed_input[1])
+            curr_transaction = Transaction('', '', parsed_input[0], '0.00', parsed_input[1], current_year)
 
         elif is_new_transaction:
             if is_reading_transaction:
@@ -52,7 +58,8 @@ def convert_input_into_transactions_list(file_to_load):
             curr_transaction = Transaction(
                     parsed_input[0], parsed_input[1],
                     parsed_input[2], parsed_input[3],
-                    parsed_input[4] if is_new_transaction_with_balance else '' 
+                    parsed_input[4] if is_new_transaction_with_balance else '',
+                    current_year
             )
             #print(str(curr_transaction))
 
@@ -89,9 +96,10 @@ if __name__ == '__main__':
             description='This script aims to extract the desired transaction data from the Okular exported text file and convert it into a CSV format.')
     parser.add_argument('-i', '--input-filename', required=True)
     parser.add_argument('-o', '--output-filename', required=True)
+    parser.add_argument('-y', '--current-year', required=True)
 
     args = parser.parse_args()
     print(args.input_filename, args.output_filename)
 
-    transactions_list = convert_input_into_transactions_list(args.input_filename)
+    transactions_list = convert_input_into_transactions_list(args.input_filename, args.current_year)
     generate_csv(args.output_filename, transactions_list)
