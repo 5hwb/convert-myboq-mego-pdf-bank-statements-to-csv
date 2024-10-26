@@ -4,10 +4,14 @@ from file_io import load_file_to_str, save_str_to_file
 
 CSV_HEADER = 'Date,Processed,Description,Debits ($),Credits ($),Balance ($)'
 REGEX_DATE = r'([0-9]{2}-[A-Z][a-z]{2})'
-REGEX_DESCRIPTION = r'(.+)'
+REGEX_DESCRIPTION = r'(.+?)'
 REGEX_AMOUNT = r'([0-9.,-]+)'
-REGEX_TRANSACTION = REGEX_DATE + r'\s+' + REGEX_DATE + r'\s{2,}' + REGEX_DESCRIPTION + r'\s{2,}' + REGEX_AMOUNT + r'\s{2,}' + REGEX_AMOUNT
-# ([0-9]{2}-[A-Z][a-z]{2})\s+([0-9]{2}-[A-Z][a-z]{2})
+REGEX_TRANSACTION = REGEX_DATE + r'\s+' + REGEX_DATE + r'\s{2,}' + REGEX_DESCRIPTION + r'\s{2,}' + REGEX_AMOUNT
+REGEX_TRANSACTION_WITH_BALANCE = REGEX_TRANSACTION + r'\s+' + REGEX_AMOUNT
+# Full regex: ([0-9]{2}-[A-Z][a-z]{2})\s+([0-9]{2}-[A-Z][a-z]{2})\s{2,}(.+)\s{2,}([0-9.,-]+)\s{2,}([0-9.,-]+)
+# For matching just the dates: ([0-9]{2}-[A-Z][a-z]{2})\s+([0-9]{2}-[A-Z][a-z]{2})
+
+REGEX_END_OF_PAGE = r'(Page|Statement continues over|Bank of Queensland|Please check your|Remember to retain|mebank)'
 
 class Transaction:
     def __init__(self, date_received, date_processed, description, changes, balance):
@@ -26,17 +30,24 @@ def convert_input_into_transactions_list(file_to_load):
     transactions_list = []
 
     for input_line in input_data:
+        is_new_transaction_with_balance = re.search(REGEX_TRANSACTION_WITH_BALANCE, input_line) != None
         is_new_transaction = re.search(REGEX_TRANSACTION, input_line) != None
-        is_end_of_page = re.search(r'(Statement continues over|Bank of Queensland|Page)', input_line) != None
+        is_end_of_page = re.search(REGEX_END_OF_PAGE, input_line) != None
         is_reading_transaction = curr_transaction != None
-        print('[line] isNewTransaction={} isEndOfPage={} isReadingTransaction={} "{}"'.format(is_new_transaction, is_end_of_page, is_reading_transaction, input_line))
+        #print('[line] isNewTransaction={} isEndOfPage={} isReadingTransaction={} "{}"'.format(is_new_transaction, is_end_of_page, is_reading_transaction, input_line))
 
-        if is_new_transaction:
+        if is_new_transaction_with_balance:
             if is_reading_transaction:
                 transactions_list.append(curr_transaction)
 
-            parsed_input = re.search(REGEX_TRANSACTION, input_line).groups()
+            parsed_input = re.search(REGEX_TRANSACTION_WITH_BALANCE, input_line).groups()
             curr_transaction = Transaction(parsed_input[0], parsed_input[1], parsed_input[2], parsed_input[3], parsed_input[4])
+            print(str(curr_transaction))
+        elif is_new_transaction:
+            if is_reading_transaction:
+                transactions_list.append(curr_transaction)
+            parsed_input = re.search(REGEX_TRANSACTION, input_line).groups()
+            curr_transaction = Transaction(parsed_input[0], parsed_input[1], parsed_input[2], parsed_input[3], '')
             print(str(curr_transaction))
         elif is_reading_transaction:
             if is_end_of_page:
