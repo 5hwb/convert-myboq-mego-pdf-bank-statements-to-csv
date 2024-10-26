@@ -36,18 +36,18 @@ def convert_input_into_transactions_list(file_to_load):
         is_reading_transaction = curr_transaction != None
         #print('[line] isNewTransaction={} isEndOfPage={} isReadingTransaction={} "{}"'.format(is_new_transaction, is_end_of_page, is_reading_transaction, input_line))
 
-        if is_new_transaction_with_balance:
+        if is_new_transaction:
             if is_reading_transaction:
                 transactions_list.append(curr_transaction)
 
-            parsed_input = re.search(REGEX_TRANSACTION_WITH_BALANCE, input_line).groups()
-            curr_transaction = Transaction(parsed_input[0], parsed_input[1], parsed_input[2], parsed_input[3], parsed_input[4])
-            print(str(curr_transaction))
-        elif is_new_transaction:
-            if is_reading_transaction:
-                transactions_list.append(curr_transaction)
-            parsed_input = re.search(REGEX_TRANSACTION, input_line).groups()
-            curr_transaction = Transaction(parsed_input[0], parsed_input[1], parsed_input[2], parsed_input[3], '')
+            transaction_regex = REGEX_TRANSACTION_WITH_BALANCE if is_new_transaction_with_balance else REGEX_TRANSACTION
+
+            parsed_input = re.search(transaction_regex, input_line).groups()
+            curr_transaction = Transaction(
+                    parsed_input[0], parsed_input[1],
+                    parsed_input[2], parsed_input[3],
+                    parsed_input[4] if is_new_transaction_with_balance else '' 
+            )
             print(str(curr_transaction))
         elif is_reading_transaction:
             if is_end_of_page:
