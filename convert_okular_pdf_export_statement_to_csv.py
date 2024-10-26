@@ -10,17 +10,17 @@ REGEX_TRANSACTION = REGEX_DATE + r'\s+' + REGEX_DATE + r'\s{2,}' + REGEX_DESCRIP
 
 class Transaction:
     def __init__(self, date_received, date_processed, description, changes, balance):
-        self.date_received = date_received
-        self.date_processed = date_processed
-        self.description = description.strip()
+        self.date_received = date_received.replace('-', ' ')   # TODO: format this into a full date
+        self.date_processed = date_processed.replace('-', ' ') # TODO: format this into a full date
+        self.description = description.strip().replace(',', ' ')
         self.changes = changes.replace(',', '')
         self.balance = balance.replace(',', '')
 
     def __str__(self) -> str:
         return '{} {} - \"{}\": {} ({})'.format(self.date_received, self.date_processed, self.description, self.changes, self.balance)
 
-def convert_input_into_transactions_list():
-    input_data = load_file_to_str('test PDF export - MyBOQ.txt').split('\n')
+def convert_input_into_transactions_list(file_to_load):
+    input_data = load_file_to_str(file_to_load).split('\n')
     curr_transaction = None
     transactions_list = []
 
@@ -42,29 +42,27 @@ def convert_input_into_transactions_list():
                 transactions_list.append(curr_transaction)
                 curr_transaction = None
                 continue
-            curr_transaction.description += ' ' + input_line.strip()
+            curr_transaction.description += ' ' + input_line.strip().replace(',', ' ')
         else:
             curr_transaction = None
             continue
 
-    print('And the final result shall be?')
+    print('And the final result shall be:')
     [print(transaction) for transaction in transactions_list]
     print(len(transactions_list))
 
     return transactions_list
     
-def generate_csv(transactions_list):
+def generate_csv(file_to_save, transactions_list):
     output_data = CSV_HEADER + '\n'
 
     for transaction in transactions_list:
         change_is_debited = transaction.changes[0] == '-'
-        if change_is_debited:
-            output_data += '{},{},{},{},,{}'.format(transaction.date_received, transaction.date_processed, transaction.description, transaction.changes, transaction.balance) + '\n'
-        else:
-            output_data += '{},{},{},,{},{}'.format(transaction.date_received, transaction.date_processed, transaction.description, transaction.changes, transaction.balance) + '\n'
+        csv_line = '{},{},{},{},,{}' if change_is_debited else '{},{},{},,{},{}'
+        output_data += csv_line.format(transaction.date_received, transaction.date_processed, transaction.description, transaction.changes, transaction.balance) + '\n'
 
-    save_str_to_file("MyBOQ.csv", output_data)
+    save_str_to_file(file_to_save, output_data)
 
-if __name__ == "__main__":
-    transactions_list = convert_input_into_transactions_list()
-    generate_csv(transactions_list)
+if __name__ == '__main__':
+    transactions_list = convert_input_into_transactions_list('test PDF export - MyBOQ.txt')
+    generate_csv('MyBOQ.csv', transactions_list)
