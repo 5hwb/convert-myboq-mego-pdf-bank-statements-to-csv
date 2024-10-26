@@ -12,7 +12,7 @@ REGEX_TRANSACTION_WITH_BALANCE = REGEX_TRANSACTION + r'\s+' + REGEX_AMOUNT
 # For matching just the dates: ([0-9]{2}-[A-Z][a-z]{2})\s+([0-9]{2}-[A-Z][a-z]{2})
 
 REGEX_CLOSING_BALANCE = r'(Closing Balance)\s+' + REGEX_AMOUNT
-REGEX_END_OF_PAGE = r'(Page|Statement continues over|Bank of Queensland|Please check your|Remember to retain|mebank)'
+REGEX_END_OF_PAGE = r'(Page|Statement continues over|Bank of Queensland|Please check your|Remember to retain|mebank|Account security tips|•)'
 
 class Transaction:
     def __init__(self, date_received, date_processed, description, changes, balance):
