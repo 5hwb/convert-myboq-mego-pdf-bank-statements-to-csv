@@ -1,3 +1,4 @@
+import argparse
 import re
 from file_io import load_file_to_str, save_str_to_file
 
@@ -64,5 +65,14 @@ def generate_csv(file_to_save, transactions_list):
     save_str_to_file(file_to_save, output_data)
 
 if __name__ == '__main__':
-    transactions_list = convert_input_into_transactions_list('test PDF export - MyBOQ.txt')
-    generate_csv('MyBOQ.csv', transactions_list)
+    parser = argparse.ArgumentParser(
+            prog='ConvertBankStatementPDFTextExportToCSV',
+            description='This script aims to extract the desired transaction data from the Okular exported text file and convert it into a CSV format.')
+    parser.add_argument('-i', '--input-filename', required=True)
+    parser.add_argument('-o', '--output-filename', required=True)
+
+    args = parser.parse_args()
+    print(args.input_filename, args.output_filename)
+
+    transactions_list = convert_input_into_transactions_list(args.input_filename)
+    generate_csv(args.output_filename, transactions_list)
