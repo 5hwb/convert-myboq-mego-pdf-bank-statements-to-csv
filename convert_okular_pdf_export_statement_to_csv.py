@@ -37,6 +37,9 @@ def convert_input_into_transactions_list(file_to_load, current_year):
     transactions_list = []
 
     for input_line in input_data:
+        if len(input_line) == 0:
+            continue
+
         is_closing_balance = re.search(REGEX_CLOSING_BALANCE, input_line) != None
         is_new_transaction_with_balance = re.search(REGEX_TRANSACTION_WITH_BALANCE, input_line) != None
         is_new_transaction = re.search(REGEX_TRANSACTION, input_line) != None
