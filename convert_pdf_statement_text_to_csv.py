@@ -84,8 +84,10 @@ def convert_input_into_transactions_list(file_to_load, current_year):
 
     return transactions_list
     
-def generate_csv(file_to_save, transactions_list):
+def generate_csv(transactions_list, file_to_save, is_reversed=False):
     output_data = CSV_HEADER + '\n'
+
+    transactions_list = reversed(transactions_list) if is_reversed else transactions_list
 
     for transaction in transactions_list:
         change_is_debited = transaction.changes[0] == '-'
@@ -101,9 +103,10 @@ if __name__ == '__main__':
     parser.add_argument('-i', '--input-filename', required=True, help='Filename of the text file to convert to CSV')
     parser.add_argument('-o', '--output-filename', required=True, help='Filename of the CSV file to export to')
     parser.add_argument('-y', '--current-year', required=True, help='The current year to add to the transaction date')
+    parser.add_argument('-r', '--reverse', action='store_true', help='If provided, reverse the output')
 
     args = parser.parse_args()
-    print(args.input_filename, args.output_filename)
+    print(args)
 
     transactions_list = convert_input_into_transactions_list(args.input_filename, args.current_year)
-    generate_csv(args.output_filename, transactions_list)
+    generate_csv(transactions_list, args.output_filename, args.reverse)
