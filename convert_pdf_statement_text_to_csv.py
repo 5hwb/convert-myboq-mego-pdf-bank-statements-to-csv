@@ -52,6 +52,7 @@ def convert_input_into_transactions_list(file_to_load, current_year):
                 transactions_list.append(curr_transaction)
             parsed_input = re.search(REGEX_CLOSING_BALANCE, input_line).groups()
             curr_transaction = Transaction('', '', parsed_input[0], '0.00', parsed_input[1], current_year)
+            #print('TRANSACTION: {}'.format(str(curr_transaction)))
 
         elif is_new_transaction:
             if is_reading_transaction:
@@ -61,10 +62,10 @@ def convert_input_into_transactions_list(file_to_load, current_year):
             curr_transaction = Transaction(
                     parsed_input[0], parsed_input[1],
                     parsed_input[2], parsed_input[3],
-                    parsed_input[4] if is_new_transaction_with_balance else '',
+                    parsed_input[4] if is_new_transaction_with_balance else '0.00',
                     current_year
             )
-            #print(str(curr_transaction))
+            #print('TRANSACTION: {}'.format(str(curr_transaction)))
 
         elif is_reading_transaction:
             if is_end_of_page:
