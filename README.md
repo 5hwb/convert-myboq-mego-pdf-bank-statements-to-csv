@@ -1,24 +1,23 @@
-# Script to convert PDF bank statement text data into CSV
+# MyBOQ / ME Go bank statement PDF to CSV script
 
-Some banks are only able to export bank transactions in PDF form via the statements, as they do not have a CSV export option. This poses issues when I want to copy this data over into my spreadsheets for finance accounting purposes, as I previously would've needed to manually transcribe each transaction one by one.
+This is a pipeline for converting MyBOQ and ME Go bank statement PDF files into a CSV format for easier finance accounting. It does the following:
 
-There is a Linux program called `pdftotext` which can export the contents of the PDF to a text file, which is well structured. But as the transaction description may be spread out over multiple lines, using regex to convert it to a CSV isn't possible.
-
-This script aims to extract the desired transaction data from the exported PDF text file and convert it into a CSV format which can then be copied to a spreadsheet.
+1. Convert the PDF file using the `pdftotext` tool into to a structured text file
+2. Extract transaction data from the text file with a custom Python script and convert it into a CSV format which can then be copied to a spreadsheet for further reference.
 
 **Before: Raw exported PDF transaction data**
 
 ```
-                                                  SaveU statement.
+                                                  SaveOne statement.
                                                   Statement period
-                                                  01 Jul 24 - 31 Aug 24
+                                                  01 Jul 24 - 30 Sep 24
 
-                       Ghuji Kolp
+                       Huji Kolp
                        000 SOME ST
-                       NICEVILLE NSW 0000
+                       NICEVILLE NSC 0000
 
                                                   Account summary.
-      Account name     SaveU                    Opening balance         0
+      Account name     SaveOne                    Opening balance         0
 
       Account BSB      ###-###
                                                   Total credits      555.00
@@ -31,7 +30,7 @@ This script aims to extract the desired transaction data from the exported PDF t
 Transactions
 Date     Processed   Description       Debits ($)   Credits ($)   Balance ($)
 
-09-Sep   09-Sep      From: Jonny Nau                5.00          5.00
+09-Sep   09-Sep      From: Jonny N                  5.00          5.00
                      this is a
                      sample test
 09-Sep   09-Sep      To: Acc 0######   -3.00                      2.00
@@ -46,9 +45,9 @@ Date     Processed   Description       Debits ($)   Credits ($)   Balance ($)
 17-Sep   17-Sep      To: Acc 0######   -489.00                    11.00
                      Closing Balance                              11.00
 Page 1 of 2 | Statement continues over
-                Account security tips.
+                Account security tips
 
-   Foolproof ways to enhance account security.
+   Foolproof ways to enhance account security
    Disco 101 – making your money DANCE.
 ```
 
@@ -56,7 +55,7 @@ Page 1 of 2 | Statement continues over
 
 ```csv
 Date,Processed,Description,Debits ($),Credits ($),Balance ($)
-2024-09-09,2024-09-09,From: Jonny Nau this is a sample test,,5.00,5.00
+2024-09-09,2024-09-09,From: Jonny N this is a sample test,,5.00,5.00
 2024-09-09,2024-09-09,To: Acc 0######,-3.00,,2.00
 2024-09-15,2024-09-15,From: SALARY NICESTARTUP this is just a test,,50.00,52.00
 2024-09-15,2024-09-15,To: Acc 0######,-52.00,,0.00
@@ -65,8 +64,16 @@ Date,Processed,Description,Debits ($),Credits ($),Balance ($)
 ,,Closing Balance,,0.00,11.00
 ```
 
-## Usage example
+## Usage
+
+Execute the convert_pdf_statement_to_csv.sh Bash script in a terminal as follows:
 
 ```sh
-pdftotext -layout bank-statement.pdf | python3 convert_pdf_statement_text_to_csv.py -i bank-statement.txt -o bank-statement.csv -y 2024
+./convert_pdf_statement_to_csv.sh 'bank-statement.pdf' 2024
+```
+
+Before running the script, mark it as executable first:
+
+```sh
+chmod +x convert_pdf_statement_to_csv.sh
 ```
