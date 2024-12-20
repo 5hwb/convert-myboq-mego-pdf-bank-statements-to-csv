@@ -85,6 +85,7 @@ def convert_input_into_transactions_list(file_to_load, current_year):
     return transactions_list
     
 def generate_csv(transactions_list, file_to_save, is_reversed=False):
+    file_to_save = file_to_save.replace('.txt', '.csv')
     output_data = CSV_HEADER + '\n'
 
     transactions_list = reversed(transactions_list) if is_reversed else transactions_list
@@ -100,13 +101,12 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
             prog='ConvertBankStatementPDFTextExportToCSV',
             description='This script aims to extract the desired transaction data from the Okular exported text file and convert it into a CSV format.')
-    parser.add_argument('-i', '--input-filename', required=True, help='Filename of the text file to convert to CSV')
-    parser.add_argument('-o', '--output-filename', required=True, help='Filename of the CSV file to export to')
+    parser.add_argument('-f', '--filename', required=True, help='Filename of the text file to convert to CSV')
     parser.add_argument('-y', '--current-year', required=True, help='The current year to add to the transaction date')
     parser.add_argument('-r', '--reverse', action='store_true', help='If provided, reverse the output')
 
     args = parser.parse_args()
     print(args)
 
-    transactions_list = convert_input_into_transactions_list(args.input_filename, args.current_year)
-    generate_csv(transactions_list, args.output_filename, args.reverse)
+    transactions_list = convert_input_into_transactions_list(args.filename, args.current_year)
+    generate_csv(transactions_list, args.filename, args.reverse)
