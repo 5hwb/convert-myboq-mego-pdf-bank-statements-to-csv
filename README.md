@@ -66,14 +66,22 @@ Date,Processed,Description,Debits ($),Credits ($),Balance ($)
 
 ## Usage
 
-Execute the convert_pdf_statement_to_csv.sh Bash script in a terminal as follows:
+Execute the convert_pdf_statement_to_csv.sh Bash script in a terminal,
 
 ```sh
 ./convert_pdf_statement_to_csv.sh 'bank-statement.pdf' 2024
 ```
 
-Before running the script, mark it as executable first:
+Before running the script for the 1st time, mark it as executable first using `chmod +x convert_pdf_statement_to_csv.sh`.
+
+### Debugging
+
+Add the `-d` flag at the end.
 
 ```sh
-chmod +x convert_pdf_statement_to_csv.sh
+./convert_pdf_statement_to_csv.sh 'bank-statement.pdf' 2024 -d
 ```
+
+# TODOs
+
+- Add ability to process older formats e.g.

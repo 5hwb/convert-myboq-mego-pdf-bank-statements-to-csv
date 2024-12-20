@@ -31,7 +31,7 @@ class Transaction:
     def __str__(self) -> str:
         return '{} {} - \"{}\": {} ({})'.format(self.date_received, self.date_processed, self.description, self.changes, self.balance)
 
-def convert_input_into_transactions_list(file_to_load, current_year):
+def convert_input_into_transactions_list(file_to_load, current_year, is_debugging=False):
     input_data = load_file_to_str(file_to_load).split('\n')
     curr_transaction = None
     transactions_list = []
@@ -45,14 +45,14 @@ def convert_input_into_transactions_list(file_to_load, current_year):
         is_new_transaction_without_balance = re.search(REGEX_TRANSACTION_WITHOUT_BALANCE, input_line) != None
         is_end_of_page = re.search(REGEX_END_OF_PAGE, input_line) != None
         is_reading_transaction = curr_transaction != None
-        #print('[line] isNewTxn={} isEndOfPage={} isReadingTxn={} isNewTxnWithoutBalance={} isNewTxn={} "{}"'.format(is_new_transaction_without_balance, is_end_of_page, is_reading_transaction, is_new_transaction_without_balance, is_new_transaction, input_line))
+        if is_debugging: print('[line] isNewTxn={} isEndOfPage={} isReadingTxn={} isNewTxnWithoutBalance={} isNewTxn={} "{}"'.format(is_new_transaction_without_balance, is_end_of_page, is_reading_transaction, is_new_transaction_without_balance, is_new_transaction, input_line))
 
         if is_closing_balance:
             if is_reading_transaction:
                 transactions_list.append(curr_transaction)
             parsed_input = re.search(REGEX_CLOSING_BALANCE, input_line).groups()
             curr_transaction = Transaction('', '', parsed_input[0], '0.00', parsed_input[1], current_year)
-            #print('TRANSACTION: {}'.format(str(curr_transaction)))
+            if is_debugging: print('TRANSACTION: {}'.format(str(curr_transaction)))
 
         elif is_new_transaction_without_balance:
             if is_reading_transaction:
@@ -65,7 +65,7 @@ def convert_input_into_transactions_list(file_to_load, current_year):
                     parsed_input[4] if is_new_transaction else '0.00',
                     current_year
             )
-            #print('TRANSACTION: {}'.format(str(curr_transaction)))
+            if is_debugging: print('TRANSACTION: {}'.format(str(curr_transaction)))
 
         elif is_reading_transaction:
             if is_end_of_page:
@@ -104,9 +104,10 @@ if __name__ == '__main__':
     parser.add_argument('-f', '--filename', required=True, help='Filename of the text file to convert to CSV')
     parser.add_argument('-y', '--current-year', required=True, help='The current year to add to the transaction date')
     parser.add_argument('-r', '--reverse', action='store_true', help='If provided, reverse the output')
+    parser.add_argument('-d', '--debug', action='store_true', help='If provided, enable transaction debugging output')
 
     args = parser.parse_args()
     print(args)
 
-    transactions_list = convert_input_into_transactions_list(args.filename, args.current_year)
+    transactions_list = convert_input_into_transactions_list(args.filename, args.current_year, args.debug)
     generate_csv(transactions_list, args.filename, args.reverse)
