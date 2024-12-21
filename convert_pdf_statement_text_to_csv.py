@@ -15,7 +15,7 @@ REGEX_TRANSACTION_WITH_BALANCE = REGEX_TRANSACTION + r'\s+' + REGEX_AMOUNT
 REGEX_LEGACY_DATE = r'([0-9]{1,2} [A-Z][a-z]{2})'
 REGEX_LEGACY_TRANSACTION = REGEX_LEGACY_DATE + r'\s+' + REGEX_LEGACY_DATE + r'\s{2,}' + REGEX_DESCRIPTION + r'\s{2,}' + REGEX_AMOUNT + r'\s{2,}' + REGEX_AMOUNT + r'\s{2,}' + REGEX_AMOUNT
 
-REGEX_CLOSING_BALANCE = r'(Closing Balance)\s+' + REGEX_AMOUNT
+REGEX_CLOSING_BALANCE = r'(Closing Balance|Closing balance)\s+' + REGEX_AMOUNT
 REGEX_END_OF_PAGE = r'(Page|Statement continues over|Bank of Queensland|Please check your|Remember to retain|mebank|Account security tips|•)'
 
 def change_to_ymd_date_format(date, year):
@@ -49,10 +49,14 @@ def convert_input_into_transactions_list(file_to_load, current_year, is_using_le
         is_closing_balance = re.search(REGEX_CLOSING_BALANCE, input_line) != None
         is_new_transaction_with_balance = re.search(REGEX_TRANSACTION_WITH_BALANCE, input_line) != None
         is_new_transaction = re.search(REGEX_TRANSACTION, input_line) != None
-        is_legacy_transaction = re.search(REGEX_LEGACY_TRANSACTION, input_line) != None
+        is_new_legacy_transaction = re.search(REGEX_LEGACY_TRANSACTION, input_line) != None
         is_end_of_page = re.search(REGEX_END_OF_PAGE, input_line) != None
         is_reading_transaction = curr_transaction != None
-        if is_debugging: print('[line] isNewTxn={} isEndOfPage={} isReadingTxn={} isNewTxnWithoutBalance={} isNewTxn={} "{}"'.format(is_new_transaction, is_end_of_page, is_reading_transaction, is_new_transaction, is_new_transaction_with_balance, input_line))
+        if is_debugging:
+            if is_using_legacy_format:
+                print('[line] isNewTxn={} isEndOfPage={} isReadingTxn={} isNewLegacyTxn={} "{}"'.format(is_new_transaction, is_end_of_page, is_reading_transaction, is_new_legacy_transaction, input_line))
+            else:
+                print('[line] isNewTxn={} isEndOfPage={} isReadingTxn={} isNewTxnWithoutBalance={} isNewTxn={} "{}"'.format(is_new_transaction, is_end_of_page, is_reading_transaction, is_new_transaction, is_new_transaction_with_balance, input_line))
 
         if is_closing_balance:
             if is_reading_transaction:
@@ -64,13 +68,33 @@ def convert_input_into_transactions_list(file_to_load, current_year, is_using_le
         elif is_new_transaction:
             if is_reading_transaction:
                 transactions_list.append(curr_transaction)
-            transaction_regex = REGEX_TRANSACTION_WITH_BALANCE if is_new_transaction_with_balance else REGEX_TRANSACTION
-            parsed_input = re.search(transaction_regex, input_line).groups()
+            transaction_regex = REGEX_TRANSACTION_WITH_BALANCE if is_new_transaction_with_balance else REGEX_TRANSACTION            
+
+            parsed_input = re.search(transaction_regex, input_line).groups()            
+
             curr_transaction = Transaction(
-                    parsed_input[0], parsed_input[1],
-                    parsed_input[2], parsed_input[3],
-                    parsed_input[4] if is_new_transaction_with_balance else '0.00',
-                    current_year
+                parsed_input[0], parsed_input[1],
+                parsed_input[2], parsed_input[3],
+                parsed_input[4] if is_new_transaction_with_balance else '0.00',
+                current_year
+            )
+            if is_debugging: print('TRANSACTION: {}'.format(str(curr_transaction)))
+
+        elif is_using_legacy_format and is_new_legacy_transaction:
+            if is_reading_transaction:
+                transactions_list.append(curr_transaction)
+            transaction_regex = REGEX_LEGACY_TRANSACTION
+
+            parsed_input = re.search(transaction_regex, input_line).groups()
+            
+            debits = parsed_input[3]
+            credits = parsed_input[4]
+            changes = '-' + debits if credits == '0.00' else credits
+            curr_transaction = Transaction(
+                parsed_input[0], parsed_input[1],
+                parsed_input[2], changes,
+                parsed_input[5],
+                current_year
             )
             if is_debugging: print('TRANSACTION: {}'.format(str(curr_transaction)))
 
