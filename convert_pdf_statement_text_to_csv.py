@@ -92,7 +92,7 @@ def convert_input_into_transactions_list(file_to_load, current_year, use_legacy_
     return transactions_list
     
 def generate_csv(transactions_list, file_to_save, is_reversed=False):
-    file_to_save = file_to_save.replace('.txt', '.new.csv')
+    file_to_save = file_to_save.replace('.txt', '.csv')
     output_data = CSV_HEADER + '\n'
 
     transactions_list = reversed(transactions_list) if is_reversed else transactions_list
