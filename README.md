@@ -69,19 +69,19 @@ Date,Processed,Description,Debits ($),Credits ($),Balance ($)
 Execute the convert_pdf_statement_to_csv.sh Bash script in a terminal,
 
 ```sh
-./convert_pdf_statement_to_csv.sh 'bank-statement.pdf' 2024
+./convert_pdf_statement_to_csv.sh -f 'bank-statement.pdf' -y 2024
 ```
 
 Before running the script for the 1st time, mark it as executable first using `chmod +x convert_pdf_statement_to_csv.sh`.
 
-### Debugging
+### Optional flags
 
-Add the `-d` flag at the end.
+- `-r`, `--reverse`: Order the transactions list by their dates in descending order.
+- `-l`, `--legacy`: Process the bank statement using ME Go's pre-2024 transaction format of (debit) (credit) (balance) instead of (debit or credit) (balance), and a date format of 1 Jan instead of 01-Jan.
+- `-d`, `--debug`: Toggle transaction debugging output.
+
+e.g. to debug, use
 
 ```sh
-./convert_pdf_statement_to_csv.sh 'bank-statement.pdf' 2024 -d
+./convert_pdf_statement_to_csv.sh -f 'bank-statement.pdf' -y 2024 -d
 ```
-
-# TODOs
-
-- Add ability to process older formats e.g.
