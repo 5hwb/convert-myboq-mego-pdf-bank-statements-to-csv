@@ -34,8 +34,8 @@ class Transaction:
     def __str__(self) -> str:
         return '{} {} - \"{}\": {} ({})'.format(self.date_received, self.date_processed, self.description, self.changes, self.balance)
 
-def convert_input_into_transactions_list(file_to_load, current_year, use_legacy_format=False, is_debugging=False):
-    if is_debugging and use_legacy_format: print('Will use legacy format')
+def convert_input_into_transactions_list(file_to_load, current_year, is_using_legacy_format=False, is_debugging=False):
+    if is_debugging and is_using_legacy_format: print('Will use legacy format')
     # TODO: actually use the legacy format
 
     input_data = load_file_to_str(file_to_load).split('\n')
@@ -79,7 +79,7 @@ def convert_input_into_transactions_list(file_to_load, current_year, use_legacy_
                 transactions_list.append(curr_transaction)
                 curr_transaction = None
                 continue
-            curr_transaction.description += ' ' + input_line.strip().replace(',', ' ') # TODO swap strip and replace
+            curr_transaction.description += ' ' + input_line.replace(',', ' ').strip()
 
         else:
             curr_transaction = None
