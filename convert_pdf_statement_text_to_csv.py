@@ -15,7 +15,7 @@ REGEX_TRANSACTION_WITH_BALANCE = REGEX_TRANSACTION + r'\s+' + REGEX_AMOUNT
 REGEX_LEGACY_DATE = r'([0-9]{1,2} [A-Z][a-z]{2})'
 REGEX_LEGACY_TRANSACTION = REGEX_LEGACY_DATE + r'\s+' + REGEX_LEGACY_DATE + r'\s{2,}' + REGEX_DESCRIPTION + r'\s{2,}' + REGEX_AMOUNT + r'\s{2,}' + REGEX_AMOUNT + r'\s{2,}' + REGEX_AMOUNT
 
-REGEX_CLOSING_BALANCE = r'(Closing Balance|Closing balance)\s+' + REGEX_AMOUNT
+REGEX_CLOSING_BALANCE = r'(Closing Balance)\s+' + REGEX_AMOUNT
 REGEX_END_OF_PAGE = r'(Page|Statement continues over|Bank of Queensland|Please check your|Remember to retain|mebank|Account security tips|•)'
 
 def change_to_ymd_date_format(date, year):
@@ -36,7 +36,6 @@ class Transaction:
 
 def convert_input_into_transactions_list(file_to_load, current_year, is_using_legacy_format=False, is_debugging=False):
     if is_debugging and is_using_legacy_format: print('Will use legacy format')
-    # TODO: actually use the legacy format
 
     input_data = load_file_to_str(file_to_load).split('\n')
     curr_transaction = None
