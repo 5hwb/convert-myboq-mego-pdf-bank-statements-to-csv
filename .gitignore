@@ -1,4 +1,10 @@
 __pycache__
+
+# Ignore bank statement files and results which may contain confidential information
 *.txt
 *.csv
 *.pdf
+
+# Sample statement files (for testing)
+!example-pdf-statement.txt
+!example-pdf-statement.csv

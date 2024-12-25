@@ -1,0 +1,41 @@
+                                                  SaveOne statement.
+                                                  Statement period
+                                                  01 Jul 24 - 30 Sep 24
+
+                       Huji Kolp
+                       000 SOME ST
+                       NICEVILLE NSC 0000
+
+                                                  Account summary.
+      Account name     SaveOne                    Opening balance         0
+
+      Account BSB      ###-###
+                                                  Total credits      555.00
+
+      Account number   #########
+                                                  Total debits       -542.00
+
+                                                  Closing balance    11.00
+
+Transactions
+Date     Processed   Description       Debits ($)   Credits ($)   Balance ($)
+
+09-Sep   09-Sep      From: Jonny N                  5.00          5.00
+                     this is a
+                     sample test
+09-Sep   09-Sep      To: Acc 0######   -3.00                      2.00
+15-Sep   15-Sep      From: SALARY                   50.00         52.00
+                     NICESTARTUP
+                     this is just a
+                     test
+15-Sep   15-Sep      To: Acc 0######   -52.00
+17-Sep   17-Sep      From: SALARY                   500.00        500.00
+                     NICESTARTUP
+                     salary-sept
+17-Sep   17-Sep      To: Acc 0######   -489.00                    11.00
+                     Closing Balance                              11.00
+Page 1 of 2 | Statement continues over
+                Account security tips
+
+   Foolproof ways to enhance account security
+   Disco 101 – making your money DANCE.

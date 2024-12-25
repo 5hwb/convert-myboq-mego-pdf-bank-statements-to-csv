@@ -1,0 +1,8 @@
+Date,Processed,Description,Debits ($),Credits ($),Balance ($)
+2024-09-09,2024-09-09,From: Jonny N this is a sample test,,5.00,5.00
+2024-09-09,2024-09-09,To: Acc 0######,-3.00,,2.00
+2024-09-15,2024-09-15,From: SALARY NICESTARTUP this is just a test,,50.00,52.00
+2024-09-15,2024-09-15,To: Acc 0######,-52.00,,0.00
+2024-09-17,2024-09-17,From: SALARY NICESTARTUP salary-sept,,500.00,500.00
+2024-09-17,2024-09-17,To: Acc 0######,-489.00,,11.00
+,,Closing Balance,,0.00,11.00

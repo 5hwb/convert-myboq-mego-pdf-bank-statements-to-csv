@@ -27,5 +27,3 @@ if [[ ! "$debugging_flag" ]]; then
   echo "Will delete"
   rm "$filename.txt"
 fi
-
-# ./convert_pdf_statement_to_csv.sh -f 'bank-statement.pdf' -y 2024 -d
