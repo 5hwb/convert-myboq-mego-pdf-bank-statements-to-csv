@@ -5,6 +5,7 @@ from file_io import load_file_to_str, save_str_to_file
 
 CSV_HEADER = 'Date,Processed,Description,Debits ($),Credits ($),Balance ($)'
 REGEX_DATE = r'([0-9]{2}-[A-Z][a-z]{2})'
+#REGEX_DATE = r'([0-9]{1,2} [A-Z][a-z]{2,3})'
 REGEX_DESCRIPTION = r'(.+?)'
 REGEX_AMOUNT = r'([0-9.,-]+)'
 REGEX_TRANSACTION = REGEX_DATE + r'\s+' + REGEX_DATE + r'\s{2,}' + REGEX_DESCRIPTION + r'\s{2,}' + REGEX_AMOUNT # This accounts for transactions where the balance is blank (e.g. when it reaches $0.00)
@@ -21,7 +22,7 @@ REGEX_END_OF_PAGE = r'(Page|Statement continues over|Bank of Queensland|Please c
 def change_to_ymd_date_format(date, year):
     if date == '':
         return date
-    return datetime.strptime(date + ' ' + year, '%d %b %Y').strftime('%Y-%m-%d')
+    return datetime.strptime(date.replace('Sept', 'Sep') + ' ' + year, '%d %b %Y').strftime('%Y-%m-%d')
 
 class Transaction:
     def __init__(self, date_received, date_processed, description, changes, balance, year):
