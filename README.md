@@ -66,10 +66,10 @@ Date,Processed,Description,Debits ($),Credits ($),Balance ($)
 
 ## Usage
 
-Execute the convert_pdf_statement_to_csv.sh Bash script in a terminal,
+Execute the convert_pdf_statement_to_csv.sh Bash script in a terminal. Change 'example-bank-statement.pdf' into the name of the bank statement file to convert, and 2024 to the year the statement was introduced.
 
 ```sh
-./convert_pdf_statement_to_csv.sh -f 'bank-statement.pdf' -y 2024
+./convert_pdf_statement_to_csv.sh -f 'example-bank-statement.pdf' -y 2024
 ```
 
 Before running the script for the 1st time, mark it as executable first using `chmod +x convert_pdf_statement_to_csv.sh`.
@@ -84,4 +84,12 @@ e.g. to debug, use
 
 ```sh
 ./convert_pdf_statement_to_csv.sh -f 'bank-statement.pdf' -y 2024 -d
+```
+
+### Testing
+
+This repo comes with a sample PDF statement text file which can be used to test the Python script.
+
+```sh
+python3 convert_pdf_statement_text_to_csv.py -f "example-pdf-statement.txt" -y 2024 -d
 ```
