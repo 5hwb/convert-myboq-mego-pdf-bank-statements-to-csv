@@ -1,6 +1,6 @@
-# MyBOQ / ME Go bank statement PDF to CSV script
+# MyBOQ / ME Go + Virgin Money bank statement PDF to CSV script
 
-This is a pipeline for converting MyBOQ and ME Go bank statement PDF files into a CSV format for easier finance accounting. It does the following:
+This is a pipeline for converting MyBOQ / ME Go and Virgin Money bank statement PDF files into a CSV format for easier finance accounting. It does the following:
 
 1. Convert the PDF file using the `pdftotext` tool into to a structured text file
 2. Extract transaction data from the text file with a custom Python script and convert it into a CSV format which can then be copied to a spreadsheet for further reference.
@@ -66,15 +66,23 @@ Date,Processed,Description,Debits ($),Credits ($),Balance ($)
 
 ## Usage
 
-Execute the convert_pdf_statement_to_csv.sh Bash script in a terminal. Change 'example-bank-statement.pdf' into the name of the bank statement file to convert, and 2024 to the year the statement was introduced.
+Execute the convert_pdf_statement_to_csv.sh Bash script in a terminal. Change 'example-bank-statement.pdf' into the name of the bank statement file to convert, and 2025 to the year the statement was introduced.
 
 ```sh
-./convert_pdf_statement_to_csv.sh -f 'example-bank-statement.pdf' -y 2024
+./convert_pdf_statement_to_csv.sh -f 'example-bank-statement.pdf' -t myboq -y 2025 -r
 ```
 
 Before running the script for the 1st time, mark it as executable first using `chmod +x convert_pdf_statement_to_csv.sh`.
 
-### Optional flags
+### Flags
+
+**Required**
+
+- `-f`, `--filename`: Filename of the text file to convert to CSV
+- `-t`, `--type`: Format type of bank statement to process. Valid values: `myboq`, `virgin`
+- `-y`, `--year`: The current year to add to the transaction date. Required for MyBOQ format type
+
+**Optional**
 
 - `-r`, `--reverse`: Order the transactions list by their dates in descending order.
 - `-l`, `--legacy`: Process the bank statement using ME Go's pre-2024 transaction format of (debit) (credit) (balance) instead of (debit or credit) (balance), and a date format of 1 Jan instead of 01-Jan.
@@ -83,7 +91,7 @@ Before running the script for the 1st time, mark it as executable first using `c
 e.g. to debug, use
 
 ```sh
-./convert_pdf_statement_to_csv.sh -f 'bank-statement.pdf' -y 2024 -d
+./convert_pdf_statement_to_csv.sh -f 'bank-statement.pdf' -t myboq -y 2025 -d
 ```
 
 ### Testing
@@ -91,5 +99,5 @@ e.g. to debug, use
 This repo comes with a sample PDF statement text file which can be used to test the Python script.
 
 ```sh
-python3 convert_pdf_statement_text_to_csv.py -f "example-pdf-statement.txt" -y 2024 -d
+python3 convert_pdf_statement_text_to_csv.py -f "example-pdf-statement.txt" -t myboq -y 2025 -d
 ```

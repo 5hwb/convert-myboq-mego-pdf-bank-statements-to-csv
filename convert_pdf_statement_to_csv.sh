@@ -4,6 +4,7 @@
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         -f|--filename) filename=${2/.pdf/}; shift ;;
+        -t|--type) type=$2; shift ;;
         -y|--year) year=$2; shift ;;
         -r|--reverse) reverse_flag=-r ;;
         -l|--legacy) legacy_flag=-l ;;
@@ -14,13 +15,14 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 echo "Filename: $filename"
+echo "Type: $type"
 echo "Year: $year"
 echo "Legacy?: $legacy_flag"
 echo "Debug?: $debugging_flag"
 
 # Main pipeline
 pdftotext -layout "$filename.pdf"
-python3 convert_pdf_statement_text_to_csv.py $reverse_flag -f "$filename.txt" -y $year $legacy_flag $debugging_flag
+python3 convert_pdf_statement_text_to_csv.py $reverse_flag -f "$filename.txt" -t $type -y $year $legacy_flag $debugging_flag
 
 # Delete the intermediary txt file if not debugging
 if [[ ! "$debugging_flag" ]]; then
